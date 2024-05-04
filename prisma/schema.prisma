@@ -4,14 +4,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:1234@localhost:3306/cosecha-directa-bd"
-}
-
-model administrator {
-  id_administrator Int    @id
-  username         String
-  password         String
-  name             String
+  url      = env("DATABASE_URL")
 }
 
 model configuration {
@@ -35,7 +28,7 @@ model location {
 
 model user {
   id_user          Int            @id @default(autoincrement())
-  producer_name    String         @db.VarChar(200)
+  fullname         String         @db.VarChar(200)
   username         String         @db.VarChar(100)
   password         String         @db.VarChar(100)
   description      String?        @db.VarChar(100)
@@ -43,9 +36,57 @@ model user {
   configuration_id Int?
   location_id      Int?
   role             String         @db.VarChar(30)
+  id_number        String         @db.VarChar(10)
+  phone            String         @db.VarChar(10)
+  email            String         @db.VarChar(100)
+  direction        String         @db.VarChar(100)
   configuration    configuration? @relation(fields: [configuration_id], references: [id_configuration], onDelete: NoAction, onUpdate: NoAction, map: "PRO_CON_FK")
   location         location?      @relation(fields: [location_id], references: [id_location], onDelete: NoAction, onUpdate: NoAction, map: "PRO_LOC")
 
   @@index([configuration_id], map: "PRO_CON_FK_idx")
   @@index([location_id], map: "PRO_LOC_idx")
+}
+
+model inventory {
+  id_product Int
+  id_user    Int
+  quantity   Int?
+  unit_price Int?
+
+  @@id([id_product, id_user])
+}
+
+model product {
+  id_product   Int     @id
+  product_name String  @db.VarChar(50)
+  variety      String  @db.VarChar(50)
+  unit_measure String  @db.VarChar(50)
+  description  String? @db.VarChar(200)
+  time_period  String  @db.VarChar(45)
+}
+
+model review {
+  id_review         Int     @id
+  calification_rate Int
+  description       String? @db.VarChar(200)
+}
+
+model sale {
+  id_sale         Int      @id
+  sale_date       DateTime @db.Date
+  sale_status     String   @db.VarChar(1)
+  payment_method  String   @db.VarChar(1)
+  delivery_status String   @db.VarChar(1)
+  is_paid         Int      @db.TinyInt
+  id_user         Int
+  id_product      Int
+}
+
+model sales_detail {
+  id_product Int
+  id_sales   String @db.VarChar(45)
+  unit_price Int
+  amount     Int
+
+  @@id([id_product, id_sales])
 }

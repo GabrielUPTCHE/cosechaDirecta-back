@@ -42,7 +42,7 @@ export class UserService {
     }
 
     getUserDTO(user:User):UserDTO {
-        return {id_user:user.id_user,username:user.username, name:user.producer_name,role: user.role};
+        return {id_user:user.id_user,username:user.username, fullname:user.fullname,role: user.role};
     }
 
 }

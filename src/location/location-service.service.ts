@@ -15,4 +15,13 @@ export class LocationService {
         return this.prismaService.location.findUnique({where:{id_location:Number(id)}})
     }
 
+    async getDepartaments():Promise<Location[]>{
+        return this.prismaService.location.findMany({where:{location_type:'D'}})
+    }
+
+    async getCitiesByDepartments(deparment: number):Promise<Location[]>{
+        return this.prismaService.location.findMany({where:{location_parent:Number(deparment)}});
+    }
+
+
 }

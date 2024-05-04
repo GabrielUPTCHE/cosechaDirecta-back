@@ -1,15 +1,13 @@
 import { Prisma } from "@prisma/client";
 
-export class Administrator implements Prisma.administratorCreateInput {
-    id_administrator: number;
-    username: string;
-    password: string;
-    name: string;
-}
 
 export class User implements Prisma.userCreateInput {
-    id_user: number;
-    producer_name: string;
+    id_number: string;
+    phone: string;
+    email: string;
+    direction: string;
+    id_user: number; 
+    fullname: string;
     username: string;
     password: string;
     description?: string;
