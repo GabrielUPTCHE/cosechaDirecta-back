@@ -21,11 +21,11 @@ export class UserService {
         return this.prismaService.user.findFirstOrThrow({where:{password:password, username:username}});
     }
 
-    async createUser(data: Prisma.userCreateInput): Promise<UserDTO> {
-        const user:User =  await this.prismaService.user.create({
+    async createUser(data: Prisma.userCreateInput): Promise<UserDTO | any> {
+        const user: User | any = await this.prismaService.user.create({
             data
         })
-        return this.getUserDTO(user); 
+        return this.getUserDTO(user);
     }
 
     async updateUser(id:number,data: Prisma.userCreateInput): Promise<User> {
@@ -41,8 +41,18 @@ export class UserService {
         })
     }
 
-    getUserDTO(user:User):UserDTO {
-        return {id_user:user.id_user,username:user.username, fullname:user.fullname,role: user.role};
+    getUserDTO(user:User | any):UserDTO {
+        return {
+            id_user:user.id_user,
+            username:user.username, 
+            fullname:user.fullname,
+            role: user.role, 
+            email:user.email ,
+            direction:user.direction,
+            location_id:user.id_location,
+            phone:user.username,
+            user_img:user.user_img
+        };
     }
 
 }
