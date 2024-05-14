@@ -16,7 +16,7 @@ export class ProductController {
         return this.productService.getTimePeriodType();
     }
     
-    @Get('  ')
+    @Get('unit-measures')
     getUnitMeasures( ): string[] {
         return this.productService.getUnitMeasures();
     }
