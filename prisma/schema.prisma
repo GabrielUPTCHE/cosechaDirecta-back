@@ -57,13 +57,14 @@ model inventory {
 }
 
 model product {
-  id_product       Int     @id
-  product_name     String  @db.VarChar(50)
-  variety          String  @db.VarChar(50)
-  unit_measure     String  @db.VarChar(50)
-  description      String? @db.VarChar(200)
-  time_period_size String  @db.VarChar(10)
-  time_period_type String  @db.VarChar(45)
+  id_product       Int              @id
+  product_name     String           @db.VarChar(50)
+  variety          String           @db.VarChar(50)
+  unit_measure     String           @db.VarChar(50)
+  description      String?          @db.VarChar(200)
+  time_period_size String           @db.VarChar(10)
+  time_period_type String           @db.VarChar(45)
+  product_images   product_images[]
 }
 
 model review {
@@ -90,4 +91,13 @@ model sales_detail {
   amount     Int
 
   @@id([id_product, id_sales])
+}
+
+model product_images {
+  id_product_images Int     @id @default(autoincrement())
+  id_product        Int
+  url_image         String  @db.VarChar(250)
+  product           product @relation(fields: [id_product], references: [id_product], onDelete: NoAction, onUpdate: NoAction, map: "IMG_PRO_FK")
+
+  @@index([id_product], map: "IMG_PRO_FK_idx")
 }
