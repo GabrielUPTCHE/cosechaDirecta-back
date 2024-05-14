@@ -57,12 +57,13 @@ model inventory {
 }
 
 model product {
-  id_product   Int     @id
-  product_name String  @db.VarChar(50)
-  variety      String  @db.VarChar(50)
-  unit_measure String  @db.VarChar(50)
-  description  String? @db.VarChar(200)
-  time_period  String  @db.VarChar(45)
+  id_product       Int     @id
+  product_name     String  @db.VarChar(50)
+  variety          String  @db.VarChar(50)
+  unit_measure     String  @db.VarChar(50)
+  description      String? @db.VarChar(200)
+  time_period_size String  @db.VarChar(10)
+  time_period_type String  @db.VarChar(45)
 }
 
 model review {
