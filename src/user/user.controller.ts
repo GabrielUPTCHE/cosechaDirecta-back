@@ -3,13 +3,17 @@ import {  User } from "./user.model";
 import { UserService } from "./user.service";
 import * as bcrypt from 'bcrypt';
 import { UserDTO } from "./dto/user.dto";
+import { Auth } from "src/authentication/decorators/auth.decorator";
+import { Role } from "src/constant/role";
 
 
 @Controller('user')
+
 export class UserController {
-
+    
     constructor(private readonly userService: UserService){}
-
+    
+    @Auth(Role.N, Role.A)
     @Get('get-all')
     async getAllUsers():Promise<User[]>{
         return this.userService.getAllUsers();
@@ -23,7 +27,6 @@ export class UserController {
             const user = await this.userService.createUser(data)
             return  {status:'success', detail:'Creacion exitosa', message:'Usuario creado con éxito. ¡Bienvenido!', user:user};
         } catch (error) {
-            console.log('error:::', error);
             if (error.code === 'P2002' && error.meta?.target?.includes('username')) {
                 return {status:'error',code:error.code,detail:'Nombre de usuario repetido', message: 'El nombre de usuario ya está en uso. Por favor, elija otro.'}
             }
