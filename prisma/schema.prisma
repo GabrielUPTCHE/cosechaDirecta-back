@@ -21,50 +21,66 @@ model location {
   location_type   String?    @db.VarChar(1)
   location        location?  @relation("locationTolocation", fields: [location_parent], references: [id_location], onDelete: NoAction, onUpdate: NoAction, map: "LOC_LOC_FK")
   other_location  location[] @relation("locationTolocation")
+  product         product[]
   user            user[]
 
   @@index([location_parent], map: "LOC_LOC_FK_idx")
 }
 
 model user {
-  id_user          Int            @id @default(autoincrement())
-  fullname         String         @db.VarChar(200)
-  username         String         @unique(map: "username_UNIQUE") @db.VarChar(100)
-  password         String         @db.VarChar(100)
-  description      String?        @db.VarChar(100)
-  user_img         String?        @db.VarChar(250)
-  configuration_id Int?
-  location_id      Int?
-  role             String         @db.VarChar(30)
-  id_number        String         @db.VarChar(10)
-  phone            String         @db.VarChar(10)
-  email            String         @db.VarChar(100)
-  direction        String         @db.VarChar(100)
-  configuration    configuration? @relation(fields: [configuration_id], references: [id_configuration], onDelete: NoAction, onUpdate: NoAction, map: "PRO_CON_FK")
-  location         location?      @relation(fields: [location_id], references: [id_location], onDelete: NoAction, onUpdate: NoAction, map: "PRO_LOC")
+  id_user                          Int            @id @default(autoincrement())
+  fullname                         String         @db.VarChar(200)
+  username                         String         @unique(map: "username_UNIQUE") @db.VarChar(100)
+  password                         String         @db.VarChar(100)
+  description                      String?        @db.VarChar(100)
+  user_img                         String?        @db.VarChar(250)
+  configuration_id                 Int?
+  location_id                      Int?
+  role                             String         @db.VarChar(30)
+  id_number                        String         @db.VarChar(10)
+  phone                            String         @db.VarChar(10)
+  email                            String         @db.VarChar(100)
+  direction                        String         @db.VarChar(100)
+  inventory                        inventory[]
+  sale_sale_id_user_bussinesTouser sale[]         @relation("sale_id_user_bussinesTouser")
+  sales_detail                     sales_detail[]
+  configuration                    configuration? @relation(fields: [configuration_id], references: [id_configuration], onDelete: NoAction, onUpdate: NoAction, map: "PRO_CON_FK")
+  location                         location?      @relation(fields: [location_id], references: [id_location], onDelete: NoAction, onUpdate: NoAction, map: "PRO_LOC")
 
   @@index([configuration_id], map: "PRO_CON_FK_idx")
   @@index([location_id], map: "PRO_LOC_idx")
 }
 
 model inventory {
-  id_product Int
-  id_user    Int
-  quantity   Int?
-  unit_price Int?
+  id_product         Int
+  id_user            Int
+  quantity           Int?
+  unit_price         Int?
+  next_delivery_date DateTime? @db.DateTime(0)
+  quantity_available Int?
+  product            product   @relation(fields: [id_product], references: [id_product], onDelete: NoAction, onUpdate: NoAction, map: "INV_PRO_FK")
+  user               user      @relation(fields: [id_user], references: [id_user], onDelete: NoAction, onUpdate: NoAction, map: "INV_USR_FK")
 
   @@id([id_product, id_user])
+  @@index([id_user], map: "INV_USR_FK_idx")
 }
 
 model product {
-  id_product       Int              @id @default(autoincrement())
-  product_name     String           @db.VarChar(50)
-  variety          String           @db.VarChar(50)
-  unit_measure     String           @db.VarChar(50)
-  description      String?          @db.VarChar(200)
-  time_period_size String           @db.VarChar(10)
-  time_period_type String           @db.VarChar(45)
-  product_images   product_images[]
+  id_product        Int              @id @default(autoincrement())
+  product_name      String           @db.VarChar(50)
+  variety           String           @db.VarChar(50)
+  unit_measure      String           @db.VarChar(50)
+  description       String?          @db.VarChar(200)
+  time_period_size  String           @db.VarChar(10)
+  time_period_type  String           @db.VarChar(45)
+  location_id       Int
+  begin_period_date DateTime         @db.DateTime(0)
+  inventory         inventory[]
+  location          location         @relation(fields: [location_id], references: [id_location], onDelete: NoAction, onUpdate: NoAction, map: "PROD_LOC_FK")
+  product_images    product_images[]
+  sales_detail      sales_detail[]
+
+  @@index([location_id], map: "PRO_LOC_FK_idx")
 }
 
 model review {
@@ -74,30 +90,39 @@ model review {
 }
 
 model sale {
-  id_sale         Int      @id
-  sale_date       DateTime @db.Date
-  sale_status     String   @db.VarChar(1)
-  payment_method  String   @db.VarChar(1)
-  delivery_status String   @db.VarChar(1)
-  is_paid         Int      @db.TinyInt
-  id_user         Int
-  id_product      Int
+  id_sale                          Int            @id @default(autoincrement())
+  sale_date                        DateTime       @db.Date
+  sale_status                      String         @db.VarChar(1)
+  payment_method                   String         @db.VarChar(1)
+  delivery_status                  String         @db.VarChar(1)
+  is_paid                          Int            @db.TinyInt
+  id_user_bussines                 Int
+  user_sale_id_user_bussinesTouser user           @relation("sale_id_user_bussinesTouser", fields: [id_user_bussines], references: [id_user], onDelete: NoAction, onUpdate: NoAction, map: "SAL_B_USR_FK")
+  sales_detail                     sales_detail[]
+
+  @@index([id_user_bussines], map: "SAL_B_USR_FK_idx")
 }
 
 model sales_detail {
-  id_product Int
-  id_sales   String @db.VarChar(45)
-  unit_price Int
-  amount     Int
+  id_product       Int
+  id_sales         Int
+  unit_price       Int
+  amount           Int
+  id_user_producer Int
+  sale             sale    @relation(fields: [id_sales], references: [id_sale], onDelete: NoAction, onUpdate: NoAction, map: "SALDT_SAL_FK")
+  product          product @relation(fields: [id_product], references: [id_product], onDelete: NoAction, onUpdate: NoAction, map: "SALD_PRO_FK")
+  user             user    @relation(fields: [id_user_producer], references: [id_user], onDelete: NoAction, onUpdate: NoAction, map: "SALD_USR_FK")
 
   @@id([id_product, id_sales])
+  @@index([id_sales], map: "SALDT_PRO_FK_idx")
+  @@index([id_user_producer], map: "SALD_USR_FK_idx")
 }
 
 model product_images {
-  id_product_images Int     @id @default(autoincrement())
-  id_product        Int
-  url_image         String  @db.VarChar(250)
-  product           product @relation(fields: [id_product], references: [id_product], onDelete: NoAction, onUpdate: NoAction, map: "IMG_PRO_FK")
+  id_product_images Int      @id @default(autoincrement())
+  id_product        Int?
+  url_image         String   @db.VarChar(500)
+  product           product? @relation(fields: [id_product], references: [id_product], onDelete: NoAction, onUpdate: NoAction, map: "IMG_PRO_FK")
 
   @@index([id_product], map: "PRO_IMG_FK_idx")
 }

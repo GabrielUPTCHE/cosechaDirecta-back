@@ -8,6 +8,7 @@ import { UserService } from './user/user.service';
 import { PrismaService } from './prisma.service';
 import { ProductService } from './product/product.service';
 import { ProductModule } from './product/product.module';
+import { PaymentsModule } from './payments/payments.module';
 
 @Module({
   imports: [UserModule, LocationModule, AuthenticationModule,
@@ -16,7 +17,8 @@ import { ProductModule } from './product/product.module';
       secret:`${process.env.SECRET_KEY}`,
       signOptions:{expiresIn:'1h'}
     }),
-    ProductModule
+    ProductModule,
+    PaymentsModule,
   ],
   controllers: [],
   providers: [UserService, AuthenticationModule, PrismaService, JwtStrategy, ProductService],
