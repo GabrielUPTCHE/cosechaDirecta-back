@@ -55,5 +55,20 @@ export class PaymentsService {
         )
     }
 
+    async getSalesBussines(id_user_bussines:number): Promise <any [] > {
+        const resolvedSale = await this.prismaService.sale.findMany({where:{id_user_bussines:Number(id_user_bussines)}});
+        return resolvedSale;
+    } 
+
+    async getSalesDetail(id_sale: number): Promise <any> {
+        const resolvedSaleDetail = await this.prismaService.sales_detail.findMany({where:{id_sales:Number(id_sale)}});
+        return resolvedSaleDetail;
+    }
+
+    async getSalesDetailByProducer(id_producer: number): Promise<any> {
+        const resolvedSaleDetails = await this.prismaService.sales_detail.findMany({where:{id_user_producer:Number(id_producer)}})
+        return resolvedSaleDetails;
+    }
+
 
 }

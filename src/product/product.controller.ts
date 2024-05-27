@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { Auth } from 'src/authentication/decorators/auth.decorator';
 import { Role } from 'src/constant/role';
@@ -98,7 +98,10 @@ export class ProductController {
         return await this.productService.getInventoryByUser(id)
     }
 
-    
+    @Delete('delete-product/:id_product')
+    async deleteProduct(@Param('id_product') id_product:number): Promise<any> {
+        return this.productService.deleteProduct(id_product);
+    }
 
 
 }

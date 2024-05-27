@@ -123,6 +123,14 @@ export class ProductService {
         })
     }
 
+    async deleteProduct(id_product: number) : Promise<any> {
+        await this.prismaService.sales_detail.deleteMany({where:{id_product:Number(id_product)}});
+        await this.prismaService.product_images.deleteMany({where:{id_product:Number(id_product)}});
+        await this.prismaService.inventory.deleteMany({where:{id_product:Number(id_product)}});
+        const resolvedDelete = await  this.prismaService.product.delete({where:{id_product:Number(id_product)}, include:{inventory:true,product_images:true}});
+        return resolvedDelete;
+    }
+
     
 
     itsSameDate(deliveryDateString: Date): boolean {

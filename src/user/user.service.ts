@@ -28,19 +28,6 @@ export class UserService {
         return this.getUserDTO(user);
     }
 
-    async updateUser(id:number,data: Prisma.userCreateInput): Promise<User> {
-        return this.prismaService.user.update({
-            where:{id_user:Number(id)},
-            data:data
-        })
-    }
-
-    async deleteUser(id:number): Promise<User> {
-        return this.prismaService.user.delete({
-            where:{id_user:Number(id)}
-        })
-    }
-
     getUserDTO(user:User | any):UserDTO {
         return {
             id_user:user.id_user,
