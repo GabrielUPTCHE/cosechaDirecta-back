@@ -39,14 +39,4 @@ export class UserController {
         return this.userService.getUser(data.username, data.password);
     }
 
-    @Delete('delete/:id')
-    async deleteUser(@Param('id') id:number): Promise<User> {
-        return this.userService.deleteUser(id)
-    }
-
-    @Put('update/:id')
-    async updateUser(@Param('id') id: number,@Body() data: User):Promise<User>{
-        return this.userService.updateUser(id,data);
-    }
-
 }
